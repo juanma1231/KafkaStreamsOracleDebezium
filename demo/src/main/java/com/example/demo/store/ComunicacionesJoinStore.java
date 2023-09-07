@@ -28,6 +28,7 @@ public class ComunicacionesJoinStore {
         return comuniacionesKeyValueStore.prefixScan(index, Serdes.String().serializer());
 
     }
+    //
 
     public KeyValueIterator<String, ValueAndTimestamp<ComunicacionesJoinEstado>> all() {
         return comuniacionesKeyValueStore.all();
