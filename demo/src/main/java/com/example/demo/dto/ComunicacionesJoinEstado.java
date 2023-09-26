@@ -1,32 +1,39 @@
 package com.example.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 public class ComunicacionesJoinEstado {
-    @JsonProperty("data_comunicaciones")
+
+
+    @JsonProperty(value = "data_comunicaciones",required = false)
     String dataComunicaciones;
 
-    @JsonProperty("data_estado")
+
+
+    @JsonProperty(value = "data_estado",required = false)
     String dataEstado;
 
-    @JsonProperty("evento")
+
+    @JsonProperty(value = "evento",required = false)
     Integer evento;
 
-    @JsonProperty("create_date_comunicaciones")
+
+    @JsonProperty(value = "create_date_comunicaciones",required = false)
     Date createDateComunicaciones;
 
-    @JsonProperty("create_date_estado")
+    @JsonProperty(value = "create_date_estado",required = false)
     Date createDateEstado;
 
-    @JsonProperty("estado")
+
+    @JsonProperty(value = "estado",required = false)
     String estado;
 
-    @JsonProperty("UUID")
+    @JsonProperty(value = "UUID",required = false)
     String uuid;
 
-    @JsonProperty("unique_id")
+    @JsonProperty(value = "unique_id",required = false)
     String uniqueId;
 
     public ComunicacionesJoinEstado(String dataComunicaciones, String dataEstado, Integer evento, Date createDateComunicaciones, Date createDateEstado, String estado, String uuid, String uniqueId) {

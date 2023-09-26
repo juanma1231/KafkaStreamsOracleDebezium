@@ -9,6 +9,7 @@ public class ComunicacionesEstado {
     @JsonProperty("UUID")
     String uuid;
 
+
     @JsonProperty("UNIQUE_ID")
     String uniqueId;
 

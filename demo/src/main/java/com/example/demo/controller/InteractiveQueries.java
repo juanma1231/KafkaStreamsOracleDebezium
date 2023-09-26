@@ -31,7 +31,9 @@ public class InteractiveQueries {
             StoreQueryParameters<ReadOnlyKeyValueStore<String, ComunicacionesJoinEstado>> queryParameters= StoreQueryParameters.fromNameAndType(store, QueryableStoreTypes.keyValueStore());
             ReadOnlyKeyValueStore<String,ComunicacionesJoinEstado> keyValueStoreGlobalKTable = kafkaStreams.store(queryParameters);
             ObjectMapper objectMapper= new ObjectMapper();
-            String data = objectMapper.writeValueAsString(keyValueStoreGlobalKTable.prefixScan(prefix, Serdes.String().serializer()));
+            String data = objectMapper.writeValueAsString(keyValueStoreGlobalKTable.prefixScan(prefix.concat("-"), Serdes.String().serializer()));
+            //vlaidacion en el foreach que esto tenga la clave completada, hacer un foreach de ese key value iterator, este me entrega una ket especifica, de una uno de esos regristros le hago un split, la primer posicion
+            //SPLIT POR - y la comparo con el prefix la primera parte del array, 
             return data;
 
         } catch (Exception e) {
