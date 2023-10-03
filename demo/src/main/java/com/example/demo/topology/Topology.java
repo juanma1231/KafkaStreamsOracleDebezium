@@ -3,8 +3,11 @@ import com.example.demo.dto.Comunicaciones;
 import com.example.demo.dto.ComunicacionesEstado;
 import com.example.demo.dto.ComunicacionesJoinEstado;
 import com.example.demo.serder.SerdeFactory;
+import com.example.demo.store.ComunicacionesEstadoNoEncontrado;
 import com.example.demo.store.ComunicacionesJoinStore;
 import com.example.demo.store.ComunicaionesStore;
+import com.example.demo.store.IndexComunicacionesEstado;
+import com.example.demo.utils.UtiilsDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -17,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Component
@@ -29,6 +36,9 @@ public class Topology {
 
     @Value(value = "${topic.customers.estado}")
     String estadoTopic;
+
+    @Value(value ="${topic.index.comunicaciones.estado}")
+    String indexComunicacionesEstado;
 
     @Value(value = "${topic.resultado.comunicaciones.join.estado}")
     String joinTopic;
@@ -51,6 +61,15 @@ public class Topology {
         KStream<String, ComunicacionesEstado> estadoKStream = builder.stream(estadoTopic,
                 Consumed.with(Serdes.String(),new SerdeFactory<ComunicacionesEstado>().getSerde(ComunicacionesEstado.class)));
 
+        GlobalKTable<String, String> storeInexComunicacionesEstado= builder.globalTable(indexComunicacionesEstado, Materialized.<String,String, KeyValueStore<Bytes,byte[]>>as(IndexComunicacionesEstado.STORE_NAME)
+                .withKeySerde(Serdes.serdeFrom(Serdes.String().serializer(), Serdes.String().deserializer()))
+                .withValueSerde(Serdes.serdeFrom(Serdes.String().serializer(), Serdes.String().deserializer())));
+
+        GlobalKTable<String, ComunicacionesEstado> storeComunicacionesNoEcontrado= builder.globalTable(comunicacionNoTopic, Materialized.<String,ComunicacionesEstado, KeyValueStore<Bytes,byte[]>>as(ComunicacionesEstadoNoEncontrado.STORE_NAME)
+                .withKeySerde(Serdes.serdeFrom(Serdes.String().serializer(), Serdes.String().deserializer()))
+                .withValueSerde(new SerdeFactory<ComunicacionesEstado>().getSerde(ComunicacionesEstado.class)));
+
+
         System.out.println("este es la fecha como llega a java");
         estadoKStream.foreach(((key, value) -> System.out.println(value.getCreateDate())));
 //flujo aparte que valide, aplicar una branch, mejor con un outer join y hacer un branch, validar con el branch, si es true lo envia a un topic,
@@ -60,7 +79,7 @@ public class Topology {
                 (leftvalue,rightvalue)->{
                     if(rightvalue==null){
                         ComunicacionesJoinEstado comunicacionesJoinEstado = new ComunicacionesJoinEstado();
-                        comunicacionesJoinEstado.setCreateDateComunicaciones(new Date());
+                        comunicacionesJoinEstado.setCreateDateComunicaciones("");
                         comunicacionesJoinEstado.setEstado(leftvalue.getEstado());
                         comunicacionesJoinEstado.setCreateDateEstado(leftvalue.getCreateDate());
                         comunicacionesJoinEstado.setDataComunicaciones(null);
@@ -94,8 +113,21 @@ public class Topology {
             KeyValue keyValue = new KeyValue(key,comunicacionesEstado);
             return keyValue;
         }));
-        noEncontrado.to(comunicacionNoTopic,Produced.with(Serdes.String(), new SerdeFactory<ComunicacionesEstado>().getSerde(ComunicacionesEstado.class)));
-        branches[1].map(((key, value) -> KeyValue.pair(value.getUuid()+"-"+value.getUniqueId(),value))).to(joinTopic, Produced.with(Serdes.String(), new SerdeFactory<ComunicacionesJoinEstado>().getSerde(ComunicacionesJoinEstado.class)));
+
+        noEncontrado.map(((key, value) -> KeyValue.pair(value.getUuid().concat("|").concat(value.getUniqueId()),value))).to(comunicacionNoTopic,Produced.with(Serdes.String(), new SerdeFactory<ComunicacionesEstado>().getSerde(ComunicacionesEstado.class)));
+
+        KStream<String,ComunicacionesJoinEstado> comunicacionesJoinEstado=branches[1].map(((key, value) -> KeyValue.pair(value.getUuid()+"|"+value.getUniqueId(),value)));
+
+        comunicacionesJoinEstado.to(joinTopic, Produced.with(Serdes.String(), new SerdeFactory<ComunicacionesJoinEstado>().getSerde(ComunicacionesJoinEstado.class)));
+
+        comunicacionesJoinEstado.map(((key, value) -> {
+             Long dateEpoch = UtiilsDate.changeToEpoch(value.getCreateDateEstado());
+             return KeyValue.pair(dateEpoch + "|" + key,key);
+        })).to(indexComunicacionesEstado,Produced.with(Serdes.String(),Serdes.String()));
+
+
+                //Para las fechas con -
+
 
     }
 

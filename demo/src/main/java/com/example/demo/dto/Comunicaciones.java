@@ -18,9 +18,9 @@ public class Comunicaciones {
 
     @JsonProperty("CREATE_DATE")
     @JsonFormat(pattern = "YYYY-MM-DD")
-    Date createDate;
+    String createDate;
 
-    public Comunicaciones(String data, Integer evento, String uuid, Date createDate) {
+    public Comunicaciones(String data, Integer evento, String uuid, String createDate) {
         this.data = data;
         this.evento = evento;
         this.uuid = uuid;
@@ -54,11 +54,11 @@ public class Comunicaciones {
         this.uuid = uuid;
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 }

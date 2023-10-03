@@ -13,6 +13,7 @@ import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.core.KafkaAdmin;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,12 +38,12 @@ public class KafkaConfig {
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
     KafkaStreamsConfiguration kStreamsConfig() {
         Map<String, Object> props = new HashMap<>();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, apiID);
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "confama15");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(StreamsConfig.STATE_DIR_CONFIG,  stateDir);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffset);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, "3");
         return new KafkaStreamsConfiguration(props);
     }
@@ -53,4 +54,5 @@ public class KafkaConfig {
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         return new KafkaAdmin(configs);
     }
+
 }

@@ -20,9 +20,9 @@ public class ComunicacionesEstado {
     String estado;
 
     @JsonProperty("CREATE_DATE")
-    Date createDate;
+    String createDate;
 
-    public ComunicacionesEstado(String uuid, String uniqueId, String data, String estado, Date createDate) {
+    public ComunicacionesEstado(String uuid, String uniqueId, String data, String estado, String createDate) {
         this.uuid = uuid;
         this.uniqueId = uniqueId;
         this.data = data;
@@ -65,11 +65,11 @@ public class ComunicacionesEstado {
         this.estado = estado;
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 }

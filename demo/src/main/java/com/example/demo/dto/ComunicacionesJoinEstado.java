@@ -21,22 +21,22 @@ public class ComunicacionesJoinEstado {
 
 
     @JsonProperty(value = "create_date_comunicaciones",required = false)
-    Date createDateComunicaciones;
+    String createDateComunicaciones;
 
     @JsonProperty(value = "create_date_estado",required = false)
-    Date createDateEstado;
+    String createDateEstado;
 
 
     @JsonProperty(value = "estado",required = false)
     String estado;
 
-    @JsonProperty(value = "UUID",required = false)
+    @JsonProperty(value = "uuid",required = false)
     String uuid;
 
     @JsonProperty(value = "unique_id",required = false)
     String uniqueId;
 
-    public ComunicacionesJoinEstado(String dataComunicaciones, String dataEstado, Integer evento, Date createDateComunicaciones, Date createDateEstado, String estado, String uuid, String uniqueId) {
+    public ComunicacionesJoinEstado(String dataComunicaciones, String dataEstado, Integer evento, String createDateComunicaciones, String createDateEstado, String estado, String uuid, String uniqueId) {
         this.dataComunicaciones = dataComunicaciones;
         this.dataEstado = dataEstado;
         this.evento = evento;
@@ -74,19 +74,19 @@ public class ComunicacionesJoinEstado {
         this.evento = evento;
     }
 
-    public Date getCreateDateComunicaciones() {
+    public String getCreateDateComunicaciones() {
         return createDateComunicaciones;
     }
 
-    public void setCreateDateComunicaciones(Date createDateComunicaciones) {
+    public void setCreateDateComunicaciones(String createDateComunicaciones) {
         this.createDateComunicaciones = createDateComunicaciones;
     }
 
-    public Date getCreateDateEstado() {
+    public String getCreateDateEstado() {
         return createDateEstado;
     }
 
-    public void setCreateDateEstado(Date createDateEstado) {
+    public void setCreateDateEstado(String createDateEstado) {
         this.createDateEstado = createDateEstado;
     }
 
