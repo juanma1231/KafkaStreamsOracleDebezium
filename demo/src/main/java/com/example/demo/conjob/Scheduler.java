@@ -88,7 +88,8 @@ public class Scheduler {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Comunicaciones>> queryParameters = StoreQueryParameters.fromNameAndType(storage, QueryableStoreTypes.keyValueStore());
         ReadOnlyKeyValueStore<String, Comunicaciones> keyValueStoreGlobalKTable = kafkaStreams.store(queryParameters);
         KeyValueIterator<String, Comunicaciones> contentOfGlobalKTable = keyValueStoreGlobalKTable.all();
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate2 = LocalDate.now();
+        Date localDate = new Date();
         contentOfGlobalKTable.forEachRemaining(data->{
             try {
                 Date currentDate = new Date();
