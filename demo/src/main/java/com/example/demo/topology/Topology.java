@@ -20,16 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class Topology {
+    @Value(value = "${topic.estado.consulta}")
+    String estadoKeyTopic;
 
     @Value(value = "${topic.customers.comunicaciones}")
     String comunicacionesTopic;
@@ -124,6 +122,8 @@ public class Topology {
              Long dateEpoch = UtiilsDate.changeToEpoch(value.getCreateDateEstado());
              return KeyValue.pair(dateEpoch + "|" + key,key);
         })).to(indexComunicacionesEstado,Produced.with(Serdes.String(),Serdes.String()));
+
+        comunicacionesJoinEstado.map(((key, value) -> KeyValue.pair(value.getEstado().concat("|").concat(key),key)));
 
 
                 //Para las fechas con -

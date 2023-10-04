@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.KeyValueIterator;
@@ -23,6 +24,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -86,7 +88,7 @@ public class Scheduler {
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Comunicaciones>> queryParameters = StoreQueryParameters.fromNameAndType(storage, QueryableStoreTypes.keyValueStore());
         ReadOnlyKeyValueStore<String, Comunicaciones> keyValueStoreGlobalKTable = kafkaStreams.store(queryParameters);
         KeyValueIterator<String, Comunicaciones> contentOfGlobalKTable = keyValueStoreGlobalKTable.all();
-        Date localDate = new Date();
+        LocalDate localDate = LocalDate.now();
         contentOfGlobalKTable.forEachRemaining(data->{
             try {
                 Date currentDate = new Date();

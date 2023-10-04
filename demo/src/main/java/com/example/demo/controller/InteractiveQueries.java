@@ -121,11 +121,31 @@ public class InteractiveQueries {
 
                 });
             }
+            return indexList;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @GetMapping("/filer/state")
+    public  List<ComunicacionesJoinEstado> filterByState(@RequestParam String store, @RequestParam String state){
+        try {
+            KafkaStreams kafkaStreams = factoryBean.getKafkaStreams();
+            StoreQueryParameters<ReadOnlyKeyValueStore<String, String>> queryParameters= StoreQueryParameters.fromNameAndType("estado_key_store", QueryableStoreTypes.keyValueStore());
+            ReadOnlyKeyValueStore<String,String> keyValueStoreGlobalKTable = kafkaStreams.store(queryParameters);
+            ObjectMapper objectMapper= new ObjectMapper();
+
+            KeyValueIterator<String,String> keyValueIterator= keyValueStoreGlobalKTable.prefixScan(state.concat("|"),Serdes.String().serializer());
 
 
+            StoreQueryParameters<ReadOnlyKeyValueStore<String, ComunicacionesJoinEstado>> queryParametersIndex= StoreQueryParameters.fromNameAndType("cumunicaciones-join-store", QueryableStoreTypes.keyValueStore());
+            ReadOnlyKeyValueStore<String,ComunicacionesJoinEstado> keyValueStoreGlobalKTableIndex = kafkaStreams.store(queryParametersIndex);
+            List<ComunicacionesJoinEstado> indexList = new ArrayList<>();
+            keyValueIterator.forEachRemaining((iterator)->{
 
+                indexList.add(keyValueStoreGlobalKTableIndex.get(iterator.value));
 
-
+            });
             return indexList;
 
         } catch (Exception e) {
