@@ -114,7 +114,6 @@ public class InteractiveQueries {
                 StoreQueryParameters<ReadOnlyKeyValueStore<String, ComunicacionesJoinEstado>> queryParametersIndex= StoreQueryParameters.fromNameAndType("cumunicaciones-join-store", QueryableStoreTypes.keyValueStore());
                 ReadOnlyKeyValueStore<String,ComunicacionesJoinEstado> keyValueStoreGlobalKTableIndex = kafkaStreams.store(queryParametersIndex);
                 keyValueIterator.forEachRemaining((iterator)->{
-
                     indexList.add(keyValueStoreGlobalKTableIndex.get(iterator.value));
 
                 });
@@ -150,7 +149,7 @@ public class InteractiveQueries {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping("/filer/range")
+    @GetMapping("/filer/range/state")
     public  List<ComunicacionesJoinEstado> filterByRangeDateAndState(@RequestParam String store, @RequestParam String date, @RequestParam String secondDate, @RequestParam String state){
         try {
             KafkaStreams kafkaStreams = factoryBean.getKafkaStreams();

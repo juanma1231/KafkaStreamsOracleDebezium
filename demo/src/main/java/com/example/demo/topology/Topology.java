@@ -26,8 +26,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class Topology {
-    @Value(value = "${topic.estado.consulta}")
-    String estadoKeyTopic;
+
 
     @Value(value = "${topic.customers.comunicaciones}")
     String comunicacionesTopic;
